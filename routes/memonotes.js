@@ -2,7 +2,7 @@
 
 import express from "express";
 import {Post} from "../models/index.js";
-import { connectDB } from "../db.js";
+
 
 import {
   getAll,
