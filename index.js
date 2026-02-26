@@ -53,14 +53,7 @@ app.get('/admin', (req, res) => {
 // ⭐ NEW → routes memo
 app.use('/notes', memonotes);
 
-app.use((err, req, res, next) => {
-  console.error(err); // tampilkan error di console
 
-  res.status(500).json({
-    message: "Internal Server Error",
-    error: err.message
-  });
-});
 
 app.listen(5000, () => {
     console.log('Server running on http://localhost:5000');
