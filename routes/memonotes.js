@@ -30,7 +30,7 @@ const router = express.Router();
 router.get("/", async (req, res, next) => {
 
   try {
-    await connectDB();
+   
     const memonotes = await Post.find();
 
     res.json(memonotes);
@@ -70,7 +70,7 @@ router.get("/:id", async (req, res, next) => {
   const id = req.params.id; // ⭐ JANGAN Number()
 
   try {
-    await connectDB();
+ 
     const memonote = await Post.findById(id);
 
     if (!memonote) {
@@ -105,7 +105,7 @@ router.post("/", async (req, res, next) => {
   try {
    
      //const memonote = create(title, content);
-    await connectDB();
+   
     const memonote = await Post.create({
       title,
       content,
@@ -156,7 +156,7 @@ router.put("/:id", async (req, res, next) => {
   }
 
   try {
-    await connectDB();
+  
     const memonote = await Post.findByIdAndUpdate(
       id,
       {
