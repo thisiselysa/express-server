@@ -1,59 +1,82 @@
-import express from 'express';
+import express from "express";
 import mongoose from "mongoose";
-import memonotes from './routes/memonotes.js';
-//mooongoose.connect
-import { Post } from "./models/index.js";
-
+import memonotes from "./routes/memonotes.js";
 
 const app = express();
 
-app.use(express.json()); // ⭐ NEW → WAJIB untuk POST JSON
+app.use(express.json());
 
-//mongoose connection
-mongoose.connect("mongodb+srv://elysa_db_user:081102277112@coba-cluster.4iboir1.mongodb.net/?appName=coba-cluster")
+/* ========================
+   MONGODB CONNECTION
+======================== */
 
-try {
-    await mongoose.connect("mongodb+srv://elysa_db_user:081102277112@coba-cluster.4iboir1.mongodb.net/?appName=coba-cluster");
-    console.log("Connected to MongoDB");
-} catch (error) {
-    console.error("Error connecting to MongoDB:", error);
+const MONGODB_URI = process.env.MONGODB_URI;
+
+if (!MONGODB_URI) {
+  console.error("MONGODB_URI not found in environment variables");
 }
 
-app.get('/', (req, res) => {
-    res.send('HELLO ELLLLLLLL');
+mongoose
+  .connect(MONGODB_URI)
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((err) => console.error("MongoDB connection error:", err));
+
+/* ========================
+   ROUTES
+======================== */
+
+app.get("/", (req, res) => {
+  res.send("HELLO ELLLLLLLL");
 });
 
-app.get('/say/:greeting', (req, res) => {
-    const greeting = req.params.greeting;
-    res.send(greeting);
+app.get("/say/:greeting", (req, res) => {
+  res.send(req.params.greeting);
 });
 
-app.get('/user/:name', (req, res) => {
-    const name = req.params.name;
-    res.send(`Halo ${name}, Welcome to elthegoat server 🐐`);
+app.get("/user/:name", (req, res) => {
+  res.send(`Halo ${req.params.name}, Welcome to elthegoat server 🐐`);
 });
 
-app.get('/admin', (req, res) => {
+app.get("/admin", (req, res) => {
+  const token = req.headers.authorization;
 
-    const token = req.headers.authorization;
-
-    if (!token) {
-        return res.status(401).json({
-            error: "Unauthorized",
-            message: "Token Diperlukan"
-        });
-    }
-
-    res.json({
-        message: "Welcome Admin"
+  if (!token) {
+    return res.status(401).json({
+      error: "Unauthorized",
+      message: "Token Diperlukan",
     });
+  }
 
+  res.json({ message: "Welcome Admin" });
 });
 
-// ⭐ NEW → routes memo
-app.use('/notes', memonotes);
+app.use("/notes", memonotes);
 
+/* ========================
+   ERROR HANDLER
+======================== */
 
-app.listen(5000, () => {
-    console.log('Server running on http://localhost:5000');
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({
+    message: "Internal Server Error",
+    error: err.message,
+  });
 });
+
+/* ========================
+   EXPORT FOR VERCEL
+======================== */
+
+export default app;
+
+/* ========================
+   LOCAL SERVER ONLY
+======================== */
+
+if (process.env.NODE_ENV !== "production") {
+  const PORT = 5000;
+  app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+  });
+}
