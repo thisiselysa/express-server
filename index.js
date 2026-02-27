@@ -1,13 +1,24 @@
 import express from 'express';
 import mongoose from "mongoose";
 import memonotes from './routes/memonotes.js';
+import cors from "cors";
 //mooongoose.connect
 import { Post } from "./models/index.js";
 
 
 const app = express();
+app.use(cors());
 
 app.use(express.json()); // ⭐ NEW → WAJIB untuk POST JSON
+
+//disable cache
+app.disable("etag");
+
+app.use((req, res, next) => {
+  res.set("Cache-Control", "no-store");
+  next();
+});
+
 
 //mongoose connection
 mongoose.connect("mongodb+srv://elysa_db_user:081102277112@coba-cluster.4iboir1.mongodb.net/?appName=coba-cluster")
