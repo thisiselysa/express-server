@@ -94,11 +94,11 @@ router.get("/:id", async (req, res, next) => {
 //ini sudah model mongoose
 router.post("/", async (req, res, next) => {
 
-  const { title, content } = req.body;
+  const { author, title, content } = req.body;
 
-  if (!title || !content) {
+  if (!author || !title || !content) {
     return res.status(400).json({
-      message: "Title and content are required",
+      message: "Author, title, and content are required",
     });
   }
 
@@ -107,6 +107,7 @@ router.post("/", async (req, res, next) => {
      //const memonote = create(title, content);
    
     const memonote = await Post.create({
+      author,
       title,
       content,
     });
@@ -147,11 +148,11 @@ router.put("/:id", async (req, res, next) => {
 
   const id = req.params.id; // MongoDB pakai string _id, bukan Number
 
-  const { title, content } = req.body;
+  const { author, title, content } = req.body;
 
-  if (!title || !content) {
+  if (!author || !title || !content) {
     return res.status(400).json({
-      message: "Title and content are required",
+      message: "Author, title, and content are required",
     });
   }
 
@@ -160,6 +161,7 @@ router.put("/:id", async (req, res, next) => {
     const memonote = await Post.findByIdAndUpdate(
       id,
       {
+        author: author,
         title: title,
         content: content,
       },
