@@ -1,7 +1,11 @@
+import dotenv from "dotenv";
+dotenv.config();
 import express from 'express';
 import mongoose from "mongoose";
 import memonotes from './routes/memonotes.js';
 import cors from "cors";
+import authRoutes from "./routes/auth.js";
+import userRoutes from "./routes/users.js";
 //mooongoose.connect
 import { Post } from "./models/index.js";
 
@@ -10,6 +14,10 @@ const app = express();
 app.use(cors());
 
 app.use(express.json()); // ⭐ NEW → WAJIB untuk POST JSON
+
+//routes
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
 
 //disable cache
 app.disable("etag");
